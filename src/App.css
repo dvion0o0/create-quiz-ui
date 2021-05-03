@@ -1,38 +1,344 @@
-.App {
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+.form-center {
+  width: 90vw;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.form-header {
+  display: flex;
+  width: 100%;
+  height: 65px;
+  padding: 1.5rem;
+  justify-content: space-around;
+  align-items: center;
+  border: 1px solid #009efd;
+  border-radius: 25px;
+  box-shadow: 2px 3px 10px 3px rgba(0, 0, 0, 0.2);
+}
+
+.form-header p {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  font-size: 18px;
+}
+
+/* .header-text {
+  color: #aaaaaa;
+  padding-bottom: 5px;
+} */
+
+.active {
+  color: #0046ab;
+  border-bottom: 2px solid #0046ab;
+}
+
+.icon {
+  margin-right: 1rem;
+}
+
+.icon-active {
+  color: #2af598;
+}
+
+.form-container {
+  margin-top: 2rem;
+  width: 100%;
+  height: 550px;
+  box-shadow: 2px 3px 10px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 1.5rem 2.5rem;
+  overflow-y: scroll;
+  /* display: grid;
+  position: relative; */
+}
+
+.form-control {
+  display: grid;
+  grid-template-columns: 300px 900px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  transition: 0.3s all linear;
+}
+
+.form-control label {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.form-input {
+  width: 100%;
+  height: 35px;
+  background: #f6f6f6;
+  border: 1px solid #cecece;
+  border-radius: 5px;
+  padding: 0 2rem;
+  color: #ea711c;
+  font-size: 18px;
+}
+
+.form-input:focus {
+  border: transparent;
+  outline: none;
+}
+
+.timer-btn {
+  width: 55px;
+  height: 35px;
+  margin-right: 1rem;
+  background: #f6f6f6;
+  border: transparent;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  color: #8d8d8d;
+  cursor: pointer;
+  transition: 0.3s all linear;
+}
+
+.quiz-select-btn {
+  width: 120px;
+  height: 35px;
+  margin-right: 1rem;
+  border-radius: 5px;
+  border: transparent;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  color: #8d8d8d;
+  cursor: pointer;
+  transition: 0.3s all linear;
+}
+
+.quiz-select-btn:disabled {
+  background: #f6f6f6;
+  color: #cbcbcb;
+  cursor: none;
+}
+
+.timer-active {
+  background: #ea711c;
+  color: #ffffff;
+}
+
+.time-input {
+  width: 130px;
+  text-align: right;
+  padding: 0 0.5rem;
+}
+
+.time-input::placeholder {
+  color: #cbcbcb;
+}
+
+.section-control {
+  display: none;
+}
+
+.section-container {
+  display: grid;
+  row-gap: 0.5rem;
+}
+
+.section-input {
+  width: 40%;
+}
+
+.section-btn {
+  margin-left: 2rem;
+  width: 40px;
+  height: 80%;
+  background-color: #ea711c;
+  border: transparent;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s all linear;
+}
+
+.section-text {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.section-name {
+  margin-right: 2rem;
+  color: #8d8d8d;
+}
+
+.section-name-active {
+  color: #009efd;
+  border-bottom: 2px solid #009efd;
+  font-weight: 500;
+}
+
+.question-input {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.next-btn {
+  display: grid;
+  place-items: center;
+  width: 100px;
+  height: 35px;
+  background: #009efd;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  border: transparent;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  transform: translateX(500px);
+  cursor: pointer;
+  transition: 0.3s all linear;
+  border-radius: 4px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* assign form */
+
+.assign-btn {
+  margin-right: 2rem;
+  border: none;
+  padding: 0.4rem;
+  font-size: 18px;
+  background: transparent;
+  cursor: pointer;
+  color: #8d8d8d;
+  transition: 0.3s all linear;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.assign-btn-active {
+  color: #009efd;
+  border-bottom: 1px solid #009efd;
 }
 
-.App-link {
-  color: #61dafb;
+.drop-down-container {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.drop-down {
+  width: 140px;
+  height: 30px;
+  margin-right: 1.5rem;
+  color: #ea711c;
+  font-size: 1rem;
+  text-transform: capitalize;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  padding: 0.25rem 0.5rem;
+  box-shadow: 2px 3px 10px 3px rgba(0, 0, 0, 0.2);
+  background-repeat: no-repeat;
+  background-position: right;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 2px solid white;
+  border-radius: 10px;
+}
+
+.question-assign-container {
+  display: grid;
+}
+
+.question-assign {
+  display: grid;
+  grid-template-columns: 100px 200px 200px auto;
+  margin-bottom: 0.3rem;
+  padding: 0.5rem;
+}
+
+.question-assign:hover {
+  background: #cce7f7;
+  border-radius: 10px;
+}
+
+.question-assign h4 {
+  font-weight: 500;
+  color: #484848;
+}
+
+.question-assign p {
+  color: #8b8b8b;
+}
+
+.checkbox-container {
+  display: block;
+  position: relative;
+  /* padding-left: 35px; */
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  border-radius: 5px;
+  border: 1px solid black;
+  transition: 0.3s all linear;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a  background */
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #ea711c;
+  border: transparent;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
