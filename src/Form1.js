@@ -1,26 +1,106 @@
 import React, { useState, useRef, useEffect } from "react";
 import btnData from "./btnsData";
 import { Link } from "react-router-dom";
+import { IoCloseSharp } from "react-icons/io5";
+import { useGlobalContext } from "./context";
+
 function Form1() {
+  const [quiz, setQuiz] = useState("");
   const [timer, setTimer] = useState(false);
+  const [timerType, setTimerType] = useState("");
+  const [time, setTime] = useState("");
   const [sectionOpen, setSectionOpen] = useState(false);
   const [sectionName, setSectionName] = useState("");
-  const [sections, setSections] = useState([]);
-  const [quiz, setQuiz] = useState("");
+  // const [sections, setSections] = useState([]);
   const [selectQuestion, setSelectQuestion] = useState("");
   const [showQuestion, setShowQuestion] = useState("");
   const [maxMarks, setMaxMarks] = useState("");
-  const [changeID, setChangeID] = useState(0);
+  const [openQuestionNumber, setOpenQuestionNumber] = useState(false);
+  const [changeID, setChangeID] = useState(-1);
+  const { sections, setSections } = useGlobalContext();
+  const [error, setError] = useState({ error: true, msg: "" });
+
+  const timerChange = (e, index) => {
+    setChangeID(index);
+    setTimerType(e.target.value);
+  };
 
   const handleChange = () => {
-    if (sectionName) {
-      setSections([...sections, sectionName]);
+    if (quiz && sectionName && selectQuestion && showQuestion && maxMarks) {
+      const items = {
+        id: sections.length + 1,
+        name: sectionName,
+        questionSelect: selectQuestion,
+        questionShow: showQuestion,
+        maximumMarks: maxMarks,
+      };
+      setSections([...sections, items]);
+      setSectionName("");
+      setSelectQuestion("");
+      setShowQuestion("");
+      setMaxMarks("");
+      // setError({ error: false, msg: "" });
+      showAlert(false);
+    } else {
+      // setError({ error: true, msg: "Please fill Section Info" });
+      showAlert(true, "Please Fill Section Info");
+      // setSections([...sections]);
     }
   };
 
-  console.log(sections);
+  const handleSectionOpen = () => {
+    if (timer) {
+      if (time) {
+        setSectionOpen(true);
+      } else {
+        showAlert(true, "Please Enter Time");
+        setSectionOpen(false);
+      }
+    } else {
+      setSectionOpen(true);
+      showAlert(false);
+    }
+  };
 
-  const Ref = useRef(null);
+  const handleRemove = (id) => {
+    const newItems = sections.filter((item) => item.id !== id);
+    setSections(newItems);
+  };
+
+  useEffect(() => {
+    if (!timer) {
+      setTime("");
+      setTimerType("");
+      setChangeID(-1);
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    if (sectionName) {
+      setOpenQuestionNumber(true);
+    } else {
+      setOpenQuestionNumber(false);
+    }
+  }, [sectionName]);
+
+  const showAlert = (show = false, msg = "") => {
+    setError({ show, msg });
+  };
+
+  // useEffect(() => {
+  //   const timeOut = setTimeout(() => {
+  //     showAlert();
+  //   }, 3000);
+  //   return () => clearTimeout(timeOut);
+  // }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      showAlert();
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [time, sectionName, showQuestion, maxMarks, selectQuestion]);
 
   // useEffect(() => {
   //   if (timer) {
@@ -33,6 +113,16 @@ function Form1() {
 
   return (
     <div className="form-container">
+      <h3
+        style={{
+          textAlign: "center",
+          marginBottom: "2rem",
+          color: "#ea711c",
+        }}
+        className="alert"
+      >
+        {error.msg}
+      </h3>
       <div className="form-control">
         <label htmlFor="quiz-name">Name of Quiz</label>
         <input
@@ -72,13 +162,14 @@ function Form1() {
             return (
               <button
                 key={index}
+                value={item}
                 disabled={!timer}
                 className={`${
                   index === changeID
                     ? "quiz-select-btn timer-active"
                     : "quiz-select-btn"
                 }`}
-                onClick={() => setChangeID(index)}
+                onClick={(e) => timerChange(e, index)}
               >
                 {item}
               </button>
@@ -89,9 +180,15 @@ function Form1() {
       <div className="form-control">
         <label htmlFor="time">Time</label>
         <input
-          type="text"
+          type="number"
+          disabled={!timer}
           className="form-input time-input"
           placeholder="In Sec"
+          value={time}
+          onChange={(e) => {
+            setTime(e.target.value);
+            setError({ error: false, msg: "" });
+          }}
         />
       </div>
       <div className="form-control">
@@ -101,7 +198,7 @@ function Form1() {
             className={`${
               sectionOpen ? "timer-btn timer-active" : "timer-btn"
             }`}
-            onClick={() => setSectionOpen(true)}
+            onClick={handleSectionOpen}
           >
             YES
           </button>
@@ -127,6 +224,7 @@ function Form1() {
             <input
               type="text"
               className="form-input section-input"
+              value={sectionName}
               onChange={(e) => setSectionName(e.target.value)}
             />
             <button className="section-btn" onClick={handleChange}>
@@ -136,9 +234,20 @@ function Form1() {
           <div className="section-text">
             {sections.map((item, index) => {
               return (
-                <p key={index} className="section-name section-name-active">
-                  {item}
-                </p>
+                <div className="sections">
+                  <button
+                    key={index}
+                    className="section-name section-name-active"
+                  >
+                    {item.name}
+                  </button>
+                  <button
+                    className="close-btn"
+                    onClick={() => handleRemove(item.id)}
+                  >
+                    <IoCloseSharp />
+                  </button>
+                </div>
               );
             })}
             {/* <p className="section-name section-name-active">Section 1</p>
@@ -151,6 +260,8 @@ function Form1() {
         <input
           type="number"
           className="form-input time-input question-input"
+          disabled={!openQuestionNumber}
+          value={selectQuestion}
           onChange={(e) => setSelectQuestion(e.target.value)}
         />
       </div>
@@ -159,6 +270,8 @@ function Form1() {
         <input
           type="number"
           className="form-input time-input question-input"
+          disabled={!openQuestionNumber}
+          value={showQuestion}
           onChange={(e) => setShowQuestion(e.target.value)}
         />
       </div>
@@ -167,12 +280,18 @@ function Form1() {
         <input
           type="number"
           className="form-input time-input question-input"
+          value={maxMarks}
+          disabled={!openQuestionNumber}
           onChange={(e) => setMaxMarks(e.target.value)}
         />
       </div>
       <Link
         to="/assign"
-        style={{ border: "transparent", color: "transparent" }}
+        style={{
+          border: "transparent",
+          color: "transparent",
+          textAlign: "center",
+        }}
       >
         <div className="next-btn">NEXT</div>
       </Link>

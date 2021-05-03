@@ -1,11 +1,21 @@
 import React from "react";
+import { useGlobalContext } from "./context";
 
 function Form2() {
+  const { sections, setSections } = useGlobalContext();
+
   return (
     <div className="form-container">
       <div className="assign-btn-container">
-        <button className="assign-btn assign-btn-active">Section 1</button>
-        <button className="assign-btn">Section 2</button>
+        {/* <button className="assign-btn assign-btn-active">Section 1</button>
+        <button className="assign-btn">Section 2</button> */}
+        {sections.map((item, index) => {
+          return (
+            <button key={index} className="assign-btn assign-btn-active">
+              {item.name}
+            </button>
+          );
+        })}
       </div>
       <div className="drop-down-container">
         <select className="drop-down">

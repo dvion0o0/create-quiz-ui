@@ -1,3 +1,3 @@
-const btnData = ["WHOLE QUIZ", "PER QUESTION"];
+const btnData = ["Whole Quiz", "Per Question"];
 
 export default btnData;
