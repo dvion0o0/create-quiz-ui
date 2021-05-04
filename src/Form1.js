@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import btnData from "./btnsData";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { IoCloseSharp } from "react-icons/io5";
 import { useGlobalContext } from "./context";
 
@@ -19,6 +19,10 @@ function Form1() {
   const [changeID, setChangeID] = useState(-1);
   const { sections, setSections } = useGlobalContext();
   const [error, setError] = useState({ error: true, msg: "" });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editID, setEditId] = useState(null);
+
+  let history = useHistory();
 
   const timerChange = (e, index) => {
     setChangeID(index);
@@ -26,7 +30,14 @@ function Form1() {
   };
 
   const handleChange = () => {
-    if (quiz && sectionName && selectQuestion && showQuestion && maxMarks) {
+    if (
+      quiz &&
+      sectionName &&
+      selectQuestion &&
+      showQuestion &&
+      maxMarks &&
+      !isEditing
+    ) {
       const items = {
         id: sections.length + 1,
         name: sectionName,
@@ -41,6 +52,35 @@ function Form1() {
       setMaxMarks("");
       // setError({ error: false, msg: "" });
       showAlert(false);
+    } else if (
+      quiz &&
+      sectionName &&
+      selectQuestion &&
+      showQuestion &&
+      maxMarks &&
+      isEditing
+    ) {
+      showAlert(false);
+      const editItems = sections.map((item) => {
+        if (item.id === editID) {
+          return {
+            ...item,
+            name: sectionName,
+            questionSelect: selectQuestion,
+            questionShow: showQuestion,
+            maximumMarks: maxMarks,
+          };
+        }
+        return item;
+      });
+      setSections(editItems);
+      setSectionName("");
+      setEditId(null);
+      setIsEditing(false);
+      showAlert(false);
+      setSelectQuestion("");
+      setShowQuestion("");
+      setMaxMarks("");
     } else {
       // setError({ error: true, msg: "Please fill Section Info" });
       showAlert(true, "Please Fill Section Info");
@@ -67,6 +107,33 @@ function Form1() {
     setSections(newItems);
   };
 
+  const handleNext = (e) => {
+    if (quiz && selectQuestion && showQuestion && maxMarks) {
+      showAlert(false);
+      const items = {
+        id: sections.length + 1,
+        name: "",
+        questionSelect: selectQuestion,
+        questionShow: showQuestion,
+        maximumMarks: maxMarks,
+      };
+      setSections([...sections, items]);
+      history.push("./assign");
+    } else {
+      showAlert(true, "Please Fill Section Info");
+    }
+  };
+
+  const EditSection = (id) => {
+    const specificItem = sections.find((item) => item.id === id);
+    setIsEditing(true);
+    setEditId(id);
+    setSectionName(specificItem.name);
+    setShowQuestion(specificItem.questionShow);
+    setSelectQuestion(specificItem.questionSelect);
+    setMaxMarks(specificItem.maximumMarks);
+  };
+
   useEffect(() => {
     if (!timer) {
       setTime("");
@@ -75,13 +142,25 @@ function Form1() {
     }
   }, [timer]);
 
+  // useEffect(() => {
+  //   if (sectionName) {
+  //     setOpenQuestionNumber(true);
+  //   } else {
+  //     setOpenQuestionNumber(false);
+  //   }
+  // }, [sectionName]);
+
   useEffect(() => {
-    if (sectionName) {
-      setOpenQuestionNumber(true);
+    if (sectionOpen) {
+      if (sectionName) {
+        setOpenQuestionNumber(true);
+      } else {
+        setOpenQuestionNumber(false);
+      }
     } else {
-      setOpenQuestionNumber(false);
+      setOpenQuestionNumber(true);
     }
-  }, [sectionName]);
+  }, [sectionOpen, sectionName]);
 
   const showAlert = (show = false, msg = "") => {
     setError({ show, msg });
@@ -238,15 +317,18 @@ function Form1() {
                   <button
                     key={index}
                     className="section-name section-name-active"
+                    onClick={() => EditSection(item.id)}
                   >
-                    {item.name}
+                    {item.name && item.name}
                   </button>
-                  <button
-                    className="close-btn"
-                    onClick={() => handleRemove(item.id)}
-                  >
-                    <IoCloseSharp />
-                  </button>
+                  {item.name && (
+                    <button
+                      className="close-btn"
+                      onClick={() => handleRemove(item.id)}
+                    >
+                      <IoCloseSharp />
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -285,16 +367,18 @@ function Form1() {
           onChange={(e) => setMaxMarks(e.target.value)}
         />
       </div>
-      <Link
+      {/* <Link
         to="/assign"
         style={{
           border: "transparent",
           color: "transparent",
           textAlign: "center",
         }}
-      >
-        <div className="next-btn">NEXT</div>
-      </Link>
+      > */}
+      <div className="next-btn" onClick={(e) => handleNext(e)}>
+        NEXT
+      </div>
+      {/* </Link> */}
     </div>
   );
 }
