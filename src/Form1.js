@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import btnData from "./btnsData";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { IoCloseSharp } from "react-icons/io5";
 import { useGlobalContext } from "./context";
 
 function Form1() {
-  const [quiz, setQuiz] = useState("");
-  const [timer, setTimer] = useState(false);
-  const [timerType, setTimerType] = useState("");
-  const [time, setTime] = useState("");
-  const [sectionOpen, setSectionOpen] = useState(false);
+  // const [quiz, setQuiz] = useState("");
+  // const [timer, setTimer] = useState(false);
+  // const [timerType, setTimerType] = useState("");
+  // const [time, setTime] = useState("");
+  // const [sectionOpen, setSectionOpen] = useState(false);
   const [sectionName, setSectionName] = useState("");
   // const [sections, setSections] = useState([]);
   const [selectQuestion, setSelectQuestion] = useState("");
@@ -17,10 +17,25 @@ function Form1() {
   const [maxMarks, setMaxMarks] = useState("");
   const [openQuestionNumber, setOpenQuestionNumber] = useState(false);
   const [changeID, setChangeID] = useState(-1);
-  const { sections, setSections } = useGlobalContext();
-  const [error, setError] = useState({ error: true, msg: "" });
+  // const [error, setError] = useState({ error: true, msg: "" });
   const [isEditing, setIsEditing] = useState(false);
   const [editID, setEditId] = useState(null);
+  const {
+    sections,
+    setSections,
+    quiz,
+    setQuiz,
+    timer,
+    setTimer,
+    setTimerType,
+    time,
+    setTime,
+    sectionOpen,
+    setSectionOpen,
+    error,
+    setError,
+    fetchData,
+  } = useGlobalContext();
 
   let history = useHistory();
 
@@ -44,6 +59,7 @@ function Form1() {
         questionSelect: selectQuestion,
         questionShow: showQuestion,
         maximumMarks: maxMarks,
+        question_bank:"",
       };
       setSections([...sections, items]);
       setSectionName("");
@@ -69,6 +85,7 @@ function Form1() {
             questionSelect: selectQuestion,
             questionShow: showQuestion,
             maximumMarks: maxMarks,
+            question_bank:"",
           };
         }
         return item;
@@ -116,9 +133,15 @@ function Form1() {
         questionSelect: selectQuestion,
         questionShow: showQuestion,
         maximumMarks: maxMarks,
+        question_bank:""
       };
       setSections([...sections, items]);
       history.push("./assign");
+      fetchData();
+    } else if (sections && quiz) {
+      showAlert(false);
+      history.push("./assign");
+      fetchData();
     } else {
       showAlert(true, "Please Fill Section Info");
     }
@@ -208,6 +231,7 @@ function Form1() {
           type="text"
           name="quiz-name"
           className="form-input"
+          value={quiz}
           onChange={(e) => setQuiz(e.target.value)}
         ></input>
       </div>
@@ -367,18 +391,9 @@ function Form1() {
           onChange={(e) => setMaxMarks(e.target.value)}
         />
       </div>
-      {/* <Link
-        to="/assign"
-        style={{
-          border: "transparent",
-          color: "transparent",
-          textAlign: "center",
-        }}
-      > */}
       <div className="next-btn" onClick={(e) => handleNext(e)}>
         NEXT
       </div>
-      {/* </Link> */}
     </div>
   );
 }

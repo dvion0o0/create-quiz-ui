@@ -1,15 +1,32 @@
+import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useEffect } from "react/cjs/react.development";
 import { useGlobalContext } from "./context";
-import QuestionData from "./questionData";
 
 function Form2() {
-  const { sections, setSections } = useGlobalContext();
+  const {
+    sections,
+    QuestionData,
+    quiz,
+    timer,
+    timerType,
+    time,
+    setSections,
+    sectionOpen,
+  } = useGlobalContext();
   const [questions, setQuestions] = useState([]);
-  // const [questionID, setQuestionID] = useState("");
+  const [finalValues, setFinalValues] = useState({
+    quiz_name: quiz,
+    quiz_timer: timer,
+    quiz_timer_type: timerType,
+    quiz_timer_time: time,
+    quiz_have_sections: sectionOpen,
+    quiz_sections_info: sections,
+    quiz_questions: "",
+  });
+  const [checkId, setCheckId] = useState(0);
 
-  // const Ref = useRef(null);
-  // console.log(questionID);
+  let SelectSection = "";
 
   const selectQuestion = (e, item) => {
     if (e.currentTarget.checked) {
@@ -17,18 +34,39 @@ function Form2() {
       setQuestions([
         ...questions,
         {
-          id: item.id,
-          Tags1: item.Tags1,
-          Tags2: item.Tags2,
-          Question: item.Question,
+          question_id: item.id,
+          sectionName: "",
         },
       ]);
     } else {
       const filterItems = questions.filter(
-        (question) => question.id !== item.id
+        (question) => question.question_id !== item.id
       );
       setQuestions(filterItems);
     }
+  };
+
+  useEffect(() => {
+    setFinalValues({ ...finalValues, quiz_questions: questions });
+    sections[checkId].question_bank = questions;
+  }, [questions]);
+
+  const handleSubmit = async () => {
+    console.log(finalValues);
+    try {
+      const result = await axios.post(
+        "http://localhost:5003/create",
+        finalValues
+      );
+
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleQuestion = (index) => {
+    setCheckId(index);
   };
 
   return (
@@ -38,40 +76,54 @@ function Form2() {
         <button className="assign-btn">Section 2</button> */}
         {sections.map((item, index) => {
           return (
-            <button key={index} className="assign-btn">
+            <button
+              key={index}
+              className={`${
+                index === checkId
+                  ? "assign-btn assign-btn-active"
+                  : "assign-btn"
+              }`}
+              onClick={() => handleQuestion(index)}
+            >
               {item.name ? item.name : null}
             </button>
           );
         })}
       </div>
-      <div className="drop-down-container">
-        <select className="drop-down">
-          <option>lorem ipsn</option>
-        </select>
-        <select className="drop-down">
-          <option>lorem ipsn</option>
-        </select>
-      </div>
-      <div className="questions-assign-container">
-        {QuestionData.map((item, index) => {
-          return (
-            <div className="question-assign">
-              <label class="checkbox-container">
-                <input
-                  type="checkbox"
-                  value={item.id}
-                  onChange={(e) => selectQuestion(e, item)}
-                />
-                <span class="checkmark"></span>
-              </label>
-              <h4>{item.Tags1}</h4>
-              <h4>{item.Tags2}</h4>
-              <p>{item.Question}</p>
-            </div>
-          );
-        })}
-
-        {/* <div className="question-assign">
+      {QuestionData && (
+        <div className="drop-down-container">
+          <select className="drop-down">
+            {QuestionData.map((item, index) => {
+              return <option key={item.id}>{item.Tags1}</option>;
+            })}
+          </select>
+          <select className="drop-down">
+            {QuestionData.map((item, index) => {
+              return <option key={item.id}>{item.Tags2}</option>;
+            })}
+          </select>
+        </div>
+      )}
+      {QuestionData && (
+        <div className="questions-assign-container">
+          {QuestionData.map((item, index) => {
+            return (
+              <div className="question-assign" key={item.id}>
+                <label class="checkbox-container">
+                  <input
+                    type="checkbox"
+                    value={item.id}
+                    onChange={(e) => selectQuestion(e, item)}
+                  />
+                  <span class="checkmark"></span>
+                </label>
+                <h4>{item.Tags1}</h4>
+                <h4>{item.Tags2}</h4>
+                <p>{item.Question}</p>
+              </div>
+            );
+          })}
+          {/* <div className="question-assign">
           <label class="checkbox-container">
             <input type="checkbox" />
             <span class="checkmark"></span>
@@ -112,8 +164,13 @@ function Form2() {
             delectus?
           </p>
         </div> */}
-      </div>
-      <button className="next-btn">SHARE</button>
+        </div>
+      )}
+      {QuestionData && (
+        <button className="next-btn" onClick={handleSubmit}>
+          SHARE
+        </button>
+      )}
     </div>
   );
 }
